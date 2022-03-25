@@ -23,5 +23,5 @@ minij.o:	minij.c minij.h minij_parse.h
 	gcc -c -o minij.o minij.c
 
 clean:
-	rm *.o minij_parse.h minij_lex.c minij_parse.c mjparse
+	rm *.o minij_parse.h minij_lex.c minij_parse.c mjparse.exe
 
