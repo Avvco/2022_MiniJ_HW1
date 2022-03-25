@@ -99,13 +99,13 @@ stmts :	stmt stmts
 	|
 		{ printf("(for VarDecl*) stmts : \n"); }
 	;
-stmt   :LBP stmts RBP
+stmt  :	LBP stmts RBP
 		{ printf("Stmts -> {Stmts}\n"); }
 
-        |   IF LP exp RP stmts ELSE stmts
+        |   IF LP exp RP stmt ELSE stmt
 		{ printf("Stmts -> if(exp) Stmts else Stmts\n"); }
 
-        |   WHILE LP exp RP stmts
+        |   WHILE LP exp RP stmt
 		{ printf("Stmts -> while(Exp) Stmts\n"); }
 
         |   PRINT LP exp RP SEMI
@@ -117,7 +117,7 @@ stmt   :LBP stmts RBP
         |   ID LSP exp RSP ASSIGN exp SEMI
 		{ printf("Stmts -> id[Exp] = Exp semi\n"); }
 
-        |   vdcls
+        |   vdcl
 		{ printf("Stmts -> Vdcls\n"); }
 
         |
@@ -196,12 +196,12 @@ explist : exp exprests
         { printf("ExpList ->\n"); }
     ;
 
-exprests	:	exprest exprests
+exprests :	exprest exprests
 		{ printf("(for Exprest*) exprests : exprest exprests\n"); }
 	|
 		{ printf("(for Exprest*) exprest : \n"); }
 	;
-exprest : COMMA exp
+exprest  : 	COMMA exp
 		{ printf("exprest -> comma Exp\n"); }
     ;
 // Practice on writing the grammar rules for
