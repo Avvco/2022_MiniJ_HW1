@@ -11,7 +11,7 @@
 %left  ADD MINUS
 %left  DIV TIMES
 %token LBP RBP LSP RSP LP RP
-%token INT BOOL
+%token INT BOOL NOT
 %token IF ELSE
 %token WHILE PRINT
 %token ASSIGN
@@ -97,7 +97,7 @@ type    : INT LSP RSP
 stmts   :LBP stmts RBP
 		{ printf("Stmts -> {Stmts}\n"); }
 
-        |   IF LP EXP RP stmts ELSE stmts
+        |   IF LP exp RP stmts ELSE stmts
 		{ printf("Stmts -> if(exp) Stmts else Stmts\n"); }
 
         |   WHILE LP exp RP stmts
