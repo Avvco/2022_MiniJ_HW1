@@ -94,7 +94,12 @@ type    : INT LSP RSP
         { printf("Type ->\n"); }
     ;
 
-stmts   :LBP stmts RBP
+stmts :	stmt stmts
+		{ printf("(for VarDecl*) stmts : stmt stmts\n"); }
+	|
+		{ printf("(for VarDecl*) stmts : \n"); }
+	;
+stmt   :LBP stmts RBP
 		{ printf("Stmts -> {Stmts}\n"); }
 
         |   IF LP exp RP stmts ELSE stmts
