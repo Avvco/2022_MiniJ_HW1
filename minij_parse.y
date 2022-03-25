@@ -11,7 +11,7 @@
 %left  ADD MINUS
 %left  DIV TIMES
 %token LBP RBP LSP RSP LP RP
-%token INT
+%token INT BOOL
 %token IF ELSE
 %token WHILE PRINT
 %token ASSIGN

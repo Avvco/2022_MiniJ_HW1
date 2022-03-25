@@ -37,18 +37,6 @@ false			{return FALSE;}
 ","			{return COMMA;}
 "."			{return DOT;}
 
-// Practice on writing the lexical rules for
-// 1. PRINT (System.Out.println)
-// 2. OR (||)
-// 3. EQ (==)
-// 4. LSP ([)
-// 5. RSP (])
-// 6. SEMI (;)
-// 7. ASSIGN (=)
-// 8. COMMENT (see the description in Programming Assignment #1)
-// 9. ID (see the description in Programming Assignment #1)
-// 10. LIT (see the description in Programming Assignment #1)
-
 System.Out.println              {return PRINT;}
 "||"                            {return OR;}
 "=="                            {return EQ;}
