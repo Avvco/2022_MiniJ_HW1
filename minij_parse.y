@@ -183,21 +183,6 @@ exp     :exp ADD exp
 		{ printf("Exp -> \n"); }
     ;
 
-type    : INT LSP RSP
-		{ printf("Type -> int []\n"); }
-
-        |   BOOL
-		{ printf("Type -> bool\n"); }
-
-        |   INT
-		{ printf("Type -> int\n"); }
-
-        |   ID
-		{ printf("Type -> id\n"); }
-
-		|
-        { printf("Type ->\n"); }
-    ;
 
 explist : exp exprests
 		{ printf("ExpList -> Exprest*\n"); }
