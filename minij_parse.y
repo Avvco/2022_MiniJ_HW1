@@ -22,7 +22,7 @@
 %token ID LIT TRUE FALSE
 %token COMMENT
 
-%expect 28
+%expect 42
 
 %%
 prog	:	mainc cdcls
