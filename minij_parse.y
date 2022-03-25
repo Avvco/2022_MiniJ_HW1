@@ -22,7 +22,7 @@
 %token ID LIT TRUE FALSE
 %token COMMENT
 
-%expect 42
+%expect 0
 
 %%
 prog	:	mainc cdcls
@@ -89,15 +89,10 @@ type    : INT LSP RSP
 
         |   ID
 		{ printf("Type -> id\n"); }
-
-		|
-        { printf("Type ->\n"); }
     ;
 
 stmts :	stmt stmts
 		{ printf("(for VarDecl*) stmts : stmt stmts\n"); }
-	|
-		{ printf("(for VarDecl*) stmts : \n"); }
 	;
 stmt  :	LBP stmts RBP
 		{ printf("Stmts -> {Stmts}\n"); }
