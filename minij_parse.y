@@ -3,15 +3,16 @@
 	#include <stdlib.h>
 	#include "minij.h"
 	#include "minij_parse.h"
+	extern int yylineno;
 %}
 
 %token CLASS PUB STATIC
 %left  AND OR
-%left  EQ NE LT GT LE GE
+%left  LT LE EQ
 %left  ADD MINUS
-%left  DIV TIMES
+%left  TIMES
 %token LBP RBP LSP RSP LP RP
-%token INT BOOL NOT
+%token INT BOOLEAN
 %token IF ELSE
 %token WHILE PRINT
 %token ASSIGN
@@ -19,186 +20,178 @@
 %token RETURN
 %token SEMI COMMA
 %token THIS NEW DOT
-%token ID LIT TRUE FALSE
-%token COMMENT
+%token ID LIT TRUE FALSE NOT
 
-%expect 0
+%expect 32
 
 %%
 prog	:	mainc cdcls
-		{ printf("Program -> MainClass ClassDecl*\n");
-		  printf("Parsed OK!\n"); }
+		{ printf("%d Program -> MainClass ClassDecl*\n", yylineno);
+		  printf("%d Parsed OK!\n", yylineno); }
 	|
-		{ printf("****** Parsing failed!\n"); }
+		{ printf("%d ****** Parsing failed!\n", yylineno); }	
 	;
 
 mainc	:	CLASS ID LBP PUB STATIC VOID MAIN LP STR LSP RSP ID RP LBP stmts RBP RBP
-		{ printf("MainClass -> class id { public static void main ( string [ ] id ) {Statemet*} }\n"); }
+		{ printf("%d MainClass -> class id lbp public static void main lp string lsp rsp id rp lbp Statemet* rbp rbp\n", yylineno); }
 	;
 
 cdcls	:	cdcl cdcls
-		{ printf("(for ClassDecl*) cdcls : cdcl cdcls\n"); }
+		{ printf("%d (for ClassDecl*) cdcls : cdcl cdcls\n", yylineno); }
 	|
-		{ printf("(for ClassDecl*) cdcls : \n"); }
+		{ printf("%d (for ClassDecl*) cdcls : \n", yylineno); }
 	;
 
 cdcl	:	CLASS ID LBP vdcls mdcls RBP
-		{ printf("ClassDecl -> class id { VarDecl* MethodDecl* }\n"); }
+		{ printf("%d ClassDecl -> class id lbp VarDecl* MethodDecl* rbp\n", yylineno); }
 	;
 
 vdcls	:	vdcl vdcls
-		{ printf("(for VarDecl*) vdcls : vdcl vdcls\n"); }
+		{ printf("%d (for VarDecl*) vdcls : vdcl vdcls\n", yylineno); }
 	|
-		{ printf("(for VarDecl*) vdcls : \n"); }
+		{ printf("%d (for VarDecl*) vdcls : \n", yylineno); }
 	;
 
 vdcl	:	type ID SEMI
-		{ printf("VarDecl -> Type id ;\n"); }
+		{ printf("%d VarDecl -> Type id semi\n", yylineno); }
 	;
 
 mdcls	:	mdcl mdcls
-		{ printf("(for MethodDecl*) mdcls : mdcl mdcls\n"); }
+		{ printf("%d (for MethodDecl*) mdcls : mdcl mdcls\n", yylineno); }
 	|
-		{ printf("(for MethodDecl*) mdcls : \n"); }
+		{ printf("%d (for MethodDecl*) mdcls : \n", yylineno); }
 	;
 
 mdcl	:	PUB type ID LP formals RP LBP vdcls stmts RETURN exp SEMI RBP
-		{ printf("MethodDecl -> public Type id ( FormalList ) { Statements* return Exp ; }\n"); }
+		{ printf("%d MethodDecl -> public Type id lp FormalList rp lbp Statements* return Exp semi rbp\n", yylineno); }
 	;
 
 formals	:	type ID frest
-		{ printf("FormalList -> Type id FormalRest*\n"); }
+		{ printf("%d FormalList -> Type id FormalRest*\n", yylineno); }
 	|
-		{ printf("FormalList -> \n"); }
+		{ printf("%d FormalList -> \n", yylineno); }
 	;
 
 frest	:	COMMA type ID frest
-		{ printf("FormalRest -> , Type id FormalRest\n"); }
+		{ printf("%d FormalRest -> comma Type id FormalRest\n", yylineno); }
 	|
-		{ printf("FormalRest -> \n"); }
+		{ printf("%d FormalRest -> \n", yylineno); }
 	;
 
-type    : INT LSP RSP
-		{ printf("Type -> int []\n"); }
-
-        |   BOOL
-		{ printf("Type -> bool\n"); }
-
-        |   INT
-		{ printf("Type -> int\n"); }
-
-        |   ID
-		{ printf("Type -> id\n"); }
-    ;
-
-stmts :	stmt stmts
-		{ printf("(for VarDecl*) stmts : stmt stmts\n"); }
+type	:	INT LSP RSP
+		{ printf("%d Type -> INT LSP RSP \n", yylineno); }
+	|		
+			BOOLEAN
+		{ printf("%d Type -> BOOLEAN \n", yylineno); }
+	|		
+			INT
+		{ printf("%d Type -> INT \n", yylineno); }
+	|		
+			ID
+		{ printf("%d Type -> --%s-- \n", yylineno, $1); }
 	;
-stmt  :	LBP stmts RBP
-		{ printf("Stmt -> {stmts}\n"); }
 
-        |   IF LP exp RP stmt ELSE stmt
-		{ printf("Stmt -> if(exp) stmts else stmts\n"); }
+stmt	:	LBP stmts RBP
+		{ printf("%d stmt -> lbp Statement* rbp \n", yylineno); }
+	|		
+			IF LP exp RP stmt ELSE stmt
+		{ printf("%d stmt -> if lp Exp rp Statement else Statement \n", yylineno); }
+	|		
+			WHILE LP exp RP stmt
+		{ printf("%d stmt -> while lp Exp rp Statement \n", yylineno); }
+	|		
+			PRINT LP exp RP SEMI
+		{ printf("%d stmt -> print lp Exp rp semi \n", yylineno); }
+	|		
+			ID ASSIGN exp SEMI
+		{ printf("%d stmt -> id assign Exp rp semi \n", yylineno); }
+	|		
+			ID LSP exp RSP ASSIGN exp SEMI
+		{ printf("%d stmt -> id lsp Exp rsp assign Exp semi \n", yylineno); }
+	|		
+			vdcl
+		{ printf("%d stmt -> VarDecl \n", yylineno); }
+	;
 
-        |   WHILE LP exp RP stmt
-		{ printf("Stmt -> while(exp) stmt\n"); }
-
-        |   PRINT LP exp RP SEMI
-		{ printf("Stmt -> print(exp) ;\n"); }
-
-        |   ID ASSIGN exp SEMI
-		{ printf("Stmt -> id = exp ;\n"); }
-
-        |   ID LSP exp RSP ASSIGN exp SEMI
-		{ printf("Stmt -> id[exp] = exp;\n"); }
-
-        |   vdcl
-		{ printf("Stmt -> vdcls\n"); }
-
-        |
-		{ printf("Stmt -> \n"); }
-    ;
-
-exp     :exp ADD exp
-		{ printf("Exp -> exp + exp \n"); }
-
-        |   exp MINUS exp
-		{ printf("Exp -> exp - exp \n"); }
-
-        |   exp TIMES exp
-		{ printf("Exp -> exp * exp \n"); }
-
-        |   exp AND exp
-		{ printf("Exp -> exp && exp \n"); }
-
-        |   exp OR exp
-		{ printf("Exp -> exp || exp \n"); }
-
-        |   exp LT exp
-		{ printf("Exp -> exp < exp \n"); }
-
-        |   exp LE exp
-		{ printf("Exp -> exp <= exp \n"); }
-
-        |   exp EQ exp
-		{ printf("Exp -> exp == exp \n"); }
-
-        |   ID LSP exp RSP
-		{ printf("Exp -> [ exp ]\n"); }
-
-        |   ID LP exp RP
-		{ printf("Exp -> id ( exp )\n"); }
-
-        |   LP exp RP
-		{ printf("Exp -> ( exp )\n"); }
-
-        |   exp DOT exp
-		{ printf("Exp -> exp.exp\n"); }
-
-        |   LIT
-		{ printf("Exp -> LIT\n"); }
-
-        |   TRUE
-		{ printf("Exp -> TRUE\n"); }
-
-        |   FALSE
-		{ printf("Exp -> FALSE\n"); }
-
-        |   ID
-		{ printf("Exp -> ID\n"); }
-
-        |   THIS
-		{ printf("Exp -> THIS\n"); }
-
-        |   NEW INT LSP exp RSP
-		{ printf("Exp -> new INT [ exp ]\n"); }
-
-        |   NEW ID LP RP
-		{ printf("Exp -> new ID ( )\n"); }
-
-        |   NOT exp
-		{ printf("Exp -> ! exp\n"); }
-
-	  |
-		{ printf("Exp -> \n"); }
-    ;
-
-
-explist : exp exprests
-		{ printf("exp list -> exprest*\n"); }
-
-		|
-        { printf("ExpList ->\n"); }
-    ;
-
-exprests :	exprest exprests
-		{ printf("(for exprest*) exprests : exprest exprests\n"); }
+stmts	:	stmt stmts
+		{ printf("%d stmts -> Statement* \n", yylineno); }
 	|
-		{ printf("(for exprest*) exprest : \n"); }
+		{ printf("%d stmts -> \n", yylineno); }
 	;
-exprest  : 	COMMA exp
-		{ printf("exprest -> , exp\n"); }
-    ;
+
+exp 	:	exp ADD exp
+		{ printf("%d exp -> Exp add Exp \n", yylineno); }
+	|
+			exp MINUS exp
+		{ printf("%d exp -> Exp minus Exp \n", yylineno); }
+	|
+			exp TIMES exp
+		{ printf("%d exp -> Exp times Exp \n", yylineno); }
+	|		
+			exp AND exp
+		{ printf("%d exp -> Exp and Exp \n", yylineno); }
+	|		
+			exp OR exp
+		{ printf("%d exp -> Exp or Exp \n", yylineno); }
+	|		
+			exp LT exp
+		{ printf("%d exp -> Exp lt Exp \n", yylineno); }
+	|		
+			exp LE exp
+		{ printf("%d exp -> Exp le Exp \n", yylineno); }
+	|		
+			exp EQ exp
+		{ printf("%d exp -> Exp eq Exp \n", yylineno); }
+	|		
+			ID LSP exp RSP
+		{ printf("%d exp -> id lsp Exp rsp \n", yylineno); }
+	|		
+			ID LP expls RP
+		{ printf("%d exp -> id lp Explist rp \n", yylineno); }
+	|		
+			LP exp RP
+		{ printf("%d exp -> lp Exp rp \n", yylineno); }
+	|		
+			exp DOT exp
+		{ printf("%d exp -> Exp dot Exp \n", yylineno); }
+	|		
+			LIT
+		{ printf("%d exp -> --%s-- \n", yylineno, $1); }
+	|		
+			TRUE
+		{ printf("%d exp -> true \n", yylineno); }
+	|		
+			FALSE
+		{ printf("%d exp -> false \n", yylineno); }
+	|		
+			ID
+		{ printf("%d exp -> --%s-- \n", yylineno, $1); }
+	|		
+			THIS
+		{ printf("%d exp -> this \n", yylineno); }
+	| 		
+			NEW INT LSP exp RSP
+		{ printf("%d exp -> new int lsp exp rsp \n", yylineno); }
+	| 		
+			NEW ID LP RP
+		{ printf("%d exp -> new id lp rp \n", yylineno); }	
+	|		
+			NOT exp
+		{ printf("%d exp -> Exp \n", yylineno); }
+	;
+
+expls	:	exp exprest
+		{ printf("%d expls -> Exp ExpRest* \n", yylineno); }
+	|
+		{ printf("%d expls -> \n", yylineno); }
+	;
+
+exprest : COMMA exp exprest
+		{ printf("%d exprests -> comma Exp \n", yylineno); }
+	|
+		{ printf("%d exprests -> \n", yylineno); }
+	;
+
 // Practice on writing the grammar rules for
 // 1. type
 // 2. statement
