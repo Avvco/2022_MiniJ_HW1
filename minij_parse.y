@@ -33,7 +33,7 @@ prog	:	mainc cdcls
 	;
 
 mainc	:	CLASS ID LBP PUB STATIC VOID MAIN LP STR LSP RSP ID RP LBP stmts RBP RBP
-		{ printf("MainClass -> class id lbp public static void main lp string lsp rsp id rp lbp Statemet* rbp rbp\n"); }
+		{ printf("MainClass -> class id { public static void main ( string [ ] id ) {Statemet*} }\n"); }
 	;
 
 cdcls	:	cdcl cdcls
@@ -43,7 +43,7 @@ cdcls	:	cdcl cdcls
 	;
 
 cdcl	:	CLASS ID LBP vdcls mdcls RBP
-		{ printf("ClassDecl -> class id lbp VarDecl* MethodDecl* rbp\n"); }
+		{ printf("ClassDecl -> class id { VarDecl* MethodDecl* }\n"); }
 	;
 
 vdcls	:	vdcl vdcls
@@ -53,7 +53,7 @@ vdcls	:	vdcl vdcls
 	;
 
 vdcl	:	type ID SEMI
-		{ printf("VarDecl -> Type id semi\n"); }
+		{ printf("VarDecl -> Type id ;\n"); }
 	;
 
 mdcls	:	mdcl mdcls
@@ -63,7 +63,7 @@ mdcls	:	mdcl mdcls
 	;
 
 mdcl	:	PUB type ID LP formals RP LBP vdcls stmts RETURN exp SEMI RBP
-		{ printf("MethodDecl -> public Type id lp FormalList rp lbp Statements* return Exp semi rbp\n"); }
+		{ printf("MethodDecl -> public Type id ( FormalList ) { Statements* return Exp ; }\n"); }
 	;
 
 formals	:	type ID frest
@@ -73,7 +73,7 @@ formals	:	type ID frest
 	;
 
 frest	:	COMMA type ID frest
-		{ printf("FormalRest -> comma Type id FormalRest\n"); }
+		{ printf("FormalRest -> , Type id FormalRest\n"); }
 	|
 		{ printf("FormalRest -> \n"); }
 	;
@@ -95,109 +95,109 @@ stmts :	stmt stmts
 		{ printf("(for VarDecl*) stmts : stmt stmts\n"); }
 	;
 stmt  :	LBP stmts RBP
-		{ printf("Stmts -> {Stmts}\n"); }
+		{ printf("Stmt -> {stmts}\n"); }
 
         |   IF LP exp RP stmt ELSE stmt
-		{ printf("Stmts -> if(exp) Stmts else Stmts\n"); }
+		{ printf("Stmt -> if(exp) stmts else stmts\n"); }
 
         |   WHILE LP exp RP stmt
-		{ printf("Stmts -> while(Exp) Stmts\n"); }
+		{ printf("Stmt -> while(exp) stmt\n"); }
 
         |   PRINT LP exp RP SEMI
-		{ printf("Stmts -> print(Exp) semi\n"); }
+		{ printf("Stmt -> print(exp) ;\n"); }
 
         |   ID ASSIGN exp SEMI
-		{ printf("Stmts -> id = Exp semi\n"); }
+		{ printf("Stmt -> id = exp ;\n"); }
 
         |   ID LSP exp RSP ASSIGN exp SEMI
-		{ printf("Stmts -> id[Exp] = Exp semi\n"); }
+		{ printf("Stmt -> id[exp] = exp;\n"); }
 
         |   vdcl
-		{ printf("Stmts -> Vdcls\n"); }
+		{ printf("Stmt -> vdcls\n"); }
 
         |
-		{ printf("Stmts -> \n"); }
+		{ printf("Stmt -> \n"); }
     ;
 
 exp     :exp ADD exp
-		{ printf("Exp -> Exp + Exp\n"); }
+		{ printf("Exp -> exp + exp \n"); }
 
         |   exp MINUS exp
-		{ printf("Exp -> Exp - Exp\n"); }
+		{ printf("Exp -> exp - exp \n"); }
 
         |   exp TIMES exp
-		{ printf("Exp -> Exp * Exp\n"); }
+		{ printf("Exp -> exp * exp \n"); }
 
         |   exp AND exp
-		{ printf("Exp -> Exp && Exp\n"); }
+		{ printf("Exp -> exp && exp \n"); }
 
         |   exp OR exp
-		{ printf("Exp -> Exp || Exp\n"); }
+		{ printf("Exp -> exp || exp \n"); }
 
         |   exp LT exp
-		{ printf("Exp -> Exp < Exp\n"); }
+		{ printf("Exp -> exp < exp \n"); }
 
         |   exp LE exp
-		{ printf("Exp -> Exp <= Exp\n"); }
+		{ printf("Exp -> exp <= exp \n"); }
 
         |   exp EQ exp
-		{ printf("Exp -> Exp == Exp\n"); }
+		{ printf("Exp -> exp == exp \n"); }
 
         |   ID LSP exp RSP
-		{ printf("Exp -> [Exp]\n"); }
+		{ printf("Exp -> [ exp ]\n"); }
 
         |   ID LP exp RP
-		{ printf("Exp -> (Exp)\n"); }
+		{ printf("Exp -> id ( exp )\n"); }
 
         |   LP exp RP
-		{ printf("Exp -> (Exp)\n"); }
+		{ printf("Exp -> ( exp )\n"); }
 
         |   exp DOT exp
-		{ printf("Exp -> Exp.Exp\n"); }
+		{ printf("Exp -> exp.exp\n"); }
 
         |   LIT
-		{ printf("Exp -> lit\n"); }
+		{ printf("Exp -> LIT\n"); }
 
         |   TRUE
-		{ printf("Exp -> true\n"); }
+		{ printf("Exp -> TRUE\n"); }
 
         |   FALSE
-		{ printf("Exp -> false\n"); }
+		{ printf("Exp -> FALSE\n"); }
 
         |   ID
-		{ printf("Exp -> id\n"); }
+		{ printf("Exp -> ID\n"); }
 
         |   THIS
-		{ printf("Exp -> this\n"); }
+		{ printf("Exp -> THIS\n"); }
 
         |   NEW INT LSP exp RSP
-		{ printf("Exp -> new int[Exp]\n"); }
+		{ printf("Exp -> new INT [ exp ]\n"); }
 
         |   NEW ID LP RP
-		{ printf("Exp -> new id()\n"); }
+		{ printf("Exp -> new ID ( )\n"); }
 
         |   NOT exp
-		{ printf("Exp -> not Exp\n"); }
+		{ printf("Exp -> ! exp\n"); }
 
-		|
+	  |
 		{ printf("Exp -> \n"); }
     ;
 
 
 explist : exp exprests
-		{ printf("ExpList -> Exprest*\n"); }
+		{ printf("exp list -> exprest*\n"); }
 
 		|
         { printf("ExpList ->\n"); }
     ;
 
 exprests :	exprest exprests
-		{ printf("(for Exprest*) exprests : exprest exprests\n"); }
+		{ printf("(for exprest*) exprests : exprest exprests\n"); }
 	|
-		{ printf("(for Exprest*) exprest : \n"); }
+		{ printf("(for exprest*) exprest : \n"); }
 	;
 exprest  : 	COMMA exp
-		{ printf("exprest -> comma Exp\n"); }
+		{ printf("exprest -> , exp\n"); }
     ;
 // Practice on writing the grammar rules for
 // 1. type
